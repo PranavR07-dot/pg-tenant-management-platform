@@ -29,9 +29,9 @@ export default function ProtectedRoute({ requiredRole }) {
     )
   }
 
-  // Not logged in → redirect to login, saving the intended URL
+  // Not logged in → redirect to manager login, saving the intended URL
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to="/manager/login" state={{ from: location }} replace />
   }
 
   // Role check (only if a specific role is required and profile is loaded)

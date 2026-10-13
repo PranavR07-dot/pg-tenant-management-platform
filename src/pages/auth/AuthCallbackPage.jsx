@@ -31,9 +31,9 @@ export default function AuthCallbackPage() {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
           subscription.unsubscribe()
           if (session) {
-            navigate('/dashboard', { replace: true })
+            navigate('/manager/dashboard', { replace: true })
           } else {
-            navigate('/login', {
+            navigate('/manager/login', {
               replace: true,
               state: { message: 'Email confirmation failed. Please try signing in.' }
             })
@@ -43,11 +43,11 @@ export default function AuthCallbackPage() {
         // Safety timeout — if no event fires in 5s, redirect to login
         setTimeout(() => {
           subscription.unsubscribe()
-          navigate('/login', { replace: true })
+          navigate('/manager/login', { replace: true })
         }, 5000)
       } else {
         // Session already exists — go to dashboard
-        navigate('/dashboard', { replace: true })
+        navigate('/manager/dashboard', { replace: true })
       }
     }
 

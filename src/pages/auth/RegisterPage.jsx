@@ -16,7 +16,7 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  if (!loading && user) return <Navigate to="/dashboard" replace />
+  if (!loading && user) return <Navigate to="/manager/dashboard" replace />
 
   // --- Validation ---
   function validate() {

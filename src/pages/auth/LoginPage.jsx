@@ -17,8 +17,8 @@ export default function LoginPage() {
   const [authError, setAuthError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  // Redirect back to the page the user tried to access (or dashboard)
-  const from = location.state?.from?.pathname || '/dashboard'
+  // Redirect back to the page the user tried to access (or manager dashboard)
+  const from = location.state?.from?.pathname || '/manager/dashboard'
   // Success message from password reset or email confirmation
   const successMessage = location.state?.message || ''
 
@@ -69,6 +69,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-4">
+        {/* Back to public site */}
+        <div className="text-center">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:underline">
+            ← Browse PGs publicly
+          </Link>
+        </div>
+
         {/* Supabase not configured banner */}
         {configError && <SupabaseSetupBanner message={configError} />}
 
@@ -86,7 +93,7 @@ export default function LoginPage() {
               <Building2 size={24} className="text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">PG Manager</h1>
-            <p className="text-sm text-gray-500 mt-1">Sign in to your account</p>
+            <p className="text-sm text-gray-500 mt-1">Sign in to your manager account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 
 /** @typedef {'pg_owner' | 'tenant'} UserRole */
 
@@ -20,25 +20,18 @@ import { supabase } from '@/lib/supabase'
 
 const AuthContext = createContext(/** @type {AuthContextValue | null} */ (null))
 
-// Detect if Supabase is configured with real (non-placeholder) credentials
-function isSupabaseConfigured() {
-  const url = import.meta.env.VITE_SUPABASE_URL || ''
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-  return (
-    url.startsWith('https://') &&
-    !url.includes('placeholder') &&
-    key.length > 20 &&
-    !key.includes('placeholder')
-  )
-}
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [session, setSession] = useState(null)
   const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const configured = isSupabaseConfigured()
+  const [configError] = useState(() =>
+    configured
+      ? null
+      : 'Supabase is not configured. Copy frontend/.env.example to frontend/.env.local and add your project credentials.'
+  )
+  const [loading, setLoading] = useState(configured)
   const [profileLoading, setProfileLoading] = useState(false)
-  const [configError, setConfigError] = useState(null)
 
   // Fetch profile from public.profiles table
   const fetchProfile = useCallback(async (userId) => {
@@ -68,12 +61,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Check Supabase configuration before attempting any calls
-    if (!isSupabaseConfigured()) {
-      setConfigError(
-        'Supabase is not configured. ' +
-        'Copy frontend/.env.example to frontend/.env.local and add your project credentials.'
-      )
-      setLoading(false)
+    if (!configured) {
       return
     }
 
@@ -114,7 +102,7 @@ export function AuthProvider({ children }) {
     )
 
     return () => subscription.unsubscribe()
-  }, [fetchProfile])
+  }, [fetchProfile, configured])
 
   // Sign in with email + password
   const signIn = useCallback(async ({ email, password }) => {
